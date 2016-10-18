@@ -46,8 +46,25 @@ E12=[60  54  50];
 
 E=[E1; E2; E3; E4; E5; E6; E7; E8; E9; E10; E11; E12;];
 
-%Cálculo recursivo - Estágio final
-%   Armazenamento no início do período: A - Afluência alta; M - Afluência
-%   média; B - Afluência baixa
+%Vetor nível de reservatório
 
-ArmInA12=;
+Nivel=[Volmin:10:Volmax];
+
+
+%Cálculo recursivo - Estágio final
+%n - contagem do estágio
+%i - contagem do nível de armazenamento no início do período
+%j - contagem do nível de armazenamento no fim do período
+%k - contagem da afluência
+
+for n=size(E,1):-1:1
+    for i=1:length(Nivel)
+        Armi=Nivel(length(Nivel)-i+1);
+        for j=length(Nivel)
+            Armf=Nivel(length(Nivel)-j+1);
+            for k=1:size(E,2)
+                Afl=E(n,k);
+            end
+        end
+    end
+end
