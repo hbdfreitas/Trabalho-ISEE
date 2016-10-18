@@ -17,6 +17,14 @@ L2max=27;       %Limite de cargabilidade máxima
 L2min=0;        %Limite de cargabilidade mínima
 Custo2=75;      %Custo de operação
 
+%Corte de Carga;
+
+CustoC=800;     %Custo do corte de carga
+
+%Taxa associada ao custo futuro
+
+T=1.1;
+
 %Carga por estágio;
 
 Carga=[60  40  30  20  40  50  60  70  40  30  20  30];
@@ -38,6 +46,8 @@ E12=[60  54  50];
 
 E=[E1; E2; E3; E4; E5; E6; E7; E8; E9; E10; E11; E12;];
 
-%Cálculo recursivo
+%Cálculo recursivo - Estágio final
+%   Armazenamento no início do período: A - Afluência alta; M - Afluência
+%   média; B - Afluência baixa
 
-doifgiudhfuisi
+ArmInA12=;
