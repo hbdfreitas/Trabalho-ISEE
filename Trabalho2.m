@@ -88,7 +88,9 @@ for n=size(E,1):-1:1
                         %Caso não seja possível atingir o nível de
                         %reservatório
                         f=f+1;
-                        NaoFactivel(f,:)=[n i j k];                       
+                        NaoFactivel(f,:)=[n i j k];
+                        %Estágio, nivel inicial, nivel final e afluencia
+                        %nao factivel
                         decisao_h=0;
                         %A decisao hidreletrica é nula
                     else
@@ -150,5 +152,5 @@ for n=size(E,1):-1:1
         end
     end
 end
-DecisaoPorAfluencia
-NaoFactivel
+
+CustoImediato=[Custo1.*DecisaoPorAfluencia(:,2) Custo2.*DecisaoPorAfluencia(:,3) CustoC.*DecisaoPorAfluencia(:,4)];
