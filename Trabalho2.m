@@ -58,12 +58,26 @@ Nivel=[Volmin:10:Volmax];
 %k - contagem da afluência
 
 for n=size(E,1):-1:1
+    load=Carga(n);
     for i=1:length(Nivel)
-        Armi=Nivel(length(Nivel)-i+1);
+        armi=Nivel(length(Nivel)-i+1);
         for j=length(Nivel)
-            Armf=Nivel(length(Nivel)-j+1);
+            armf=Nivel(length(Nivel)-j+1);
             for k=1:size(E,2)
-                Afl=E(n,k);
+                afl=E(n,k);
+                en_util=(armi-armf+afl)*.9;
+                if en_util<load
+                    decisao_h=en_util;
+                    load_t=load-decisao_h;
+                    if L1max<load_t
+                        decisao_t1=L1max;
+                        load_t=load_t-L1max;
+                        if L2max<load_t
+                            decisao_t2=L2max;
+                            load_corte=load_t-L2max;
+                            decisao_corte=load_corte;
+                        else
+                            
             end
         end
     end
