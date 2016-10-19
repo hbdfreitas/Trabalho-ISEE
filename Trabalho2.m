@@ -59,7 +59,7 @@ Nivel=[Volmin:10:Volmax];
 
 DecisaoPorAfluencia=[];
 %Armazena os dados de decisao por afluencia
-Factivel=[];
+f=0;
 %Armazena a factibilidade de cada caso
 for n=size(E,1):-1:1  
     %Para cada estágio:
@@ -86,12 +86,12 @@ for n=size(E,1):-1:1
                     if en_util<0
                         %Caso não seja possível atingir o nível de
                         %reservatório
-                        Factivel(size(Factivel,1)+1,:)=0;
+                        f=f+1;
+                        NaoFactivel(f,:)=[n i j k];                       
                         decisao_h=0;
                         %A decisao hidreletrica é nula
                     else
                         decisao_h=en_util;
-                        Factivel(size(Factivel,1)+1,:)=1;
                         %A decisao hidreletrica é turbinar todo o possivel
                     end
                     load_t1=load-decisao_h;
@@ -133,7 +133,6 @@ for n=size(E,1):-1:1
                     decisao_t2=0;
                     decisao_t1=0;
                     %Não é necessário corte de carga nem UTEs
-                    Factivel(size(Factivel,1)+1,:)=1;
                     decisao_h=load;
                     %A hidrelétrica gera toda a energia necessária
                 end
@@ -150,3 +149,4 @@ for n=size(E,1):-1:1
         end
     end
 end
+NaoFactivel
