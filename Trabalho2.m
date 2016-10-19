@@ -68,16 +68,29 @@ for n=size(E,1):-1:1
                 en_util=(armi-armf+afl)*.9;
                 if en_util<load
                     decisao_h=en_util;
-                    load_t=load-decisao_h;
-                    if L1max<load_t
+                    load_t1=load-decisao_h;
+                    if L1max<load_t1
                         decisao_t1=L1max;
-                        load_t=load_t-L1max;
-                        if L2max<load_t
+                        load_t2=load_t1-L1max;
+                        if L2max<load_t2
                             decisao_t2=L2max;
-                            load_corte=load_t-L2max;
+                            load_corte=load_t2-L2max;
                             decisao_corte=load_corte;
                         else
-                            
+                            decisao_corte=0;
+                            decisao_t2=load_t2;
+                        end
+                    else
+                        decisao_corte=0;
+                        decisao_t2=0;
+                        decisao_t1=load_t1;
+                    end
+                else
+                    decisao_corte=0;
+                    decisao_t2=0;
+                    decisao_t1=0;
+                    decisao_h=load;
+                end
             end
         end
     end
