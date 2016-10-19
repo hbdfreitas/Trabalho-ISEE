@@ -57,16 +57,20 @@ Nivel=[Volmin:10:Volmax];
 %j - contagem do nível de armazenamento no fim do período
 %k - contagem da afluência
 
+DecisaoPorAfluencia=[];
+%Armazena os dados de decisao por afluencia
+Factivel=[];
+%Armazena a factibilidade de cada caso
 for n=size(E,1):-1:1  
     %Para cada estágio:
     load=Carga(n);
     %Atualiza a carga do estágio
-    for i=1:length(Nivel)
+    for i=length(Nivel):-1:1
         %Para cada nível de reservatório inicial:
         armi=Nivel(length(Nivel)-i+1);
         %Atualiza o nível inicial; Precisa mudar pra levar em conta o nível
         %da iteração anterior
-        for j=length(Nivel)
+        for j=length(Nivel):-1:1
             %Para cada nível de reservatório final:
             armf=Nivel(length(Nivel)-j+1);
             %Atualiza o nível final
@@ -79,8 +83,17 @@ for n=size(E,1):-1:1
                 %disponível
                 if en_util<load
                     %Caso a energia da UHE não seja suficiente
-                    decisao_h=en_util;
-                    %A decisao hidreletrica é turbinar todo o possivel
+                    if en_util<0
+                        %Caso não seja possível atingir o nível de
+                        %reservatório
+                        Factivel(size(Factivel,1)+1,:)=0;
+                        decisao_h=0;
+                        %A decisao hidreletrica é nula
+                    else
+                        decisao_h=en_util;
+                        Factivel(size(Factivel,1)+1,:)=1;
+                        %A decisao hidreletrica é turbinar todo o possivel
+                    end
                     load_t1=load-decisao_h;
                     %Calcula o quanto falta pras térmicas gerarem
                     if L1max<load_t1
@@ -120,10 +133,20 @@ for n=size(E,1):-1:1
                     decisao_t2=0;
                     decisao_t1=0;
                     %Não é necessário corte de carga nem UTEs
+                    Factivel(size(Factivel,1)+1,:)=1;
                     decisao_h=load;
                     %A hidrelétrica gera toda a energia necessária
                 end
-            end
+                DecisaoPorAfluencia(size(DecisaoPorAfluencia,1)+1,:)=[decisao_h decisao_t1 decisao_t2 decisao_corte];
+                %Retorna a decisao tomada em cada caso
+                %Caso a decisao da UHE seja zero, verificar matriz Factivel
+                %Se Factivel tambem retornar zero, o caso é nao fáctivel
+                decisao_h=0;
+                decisao_t1=0;
+                decisao_t2=0;
+                decisao_corte=0;
+                %Reinicializa as variáveis de decisão
+            end            
         end
     end
 end
