@@ -67,19 +67,20 @@ for n=size(E,1):-1:1
     %Atualiza a carga do estágio
     for i=length(Nivel):-1:1
         %Para cada nível de reservatório inicial:
-        armi=Nivel(length(Nivel)-i+1);
+        armi=Nivel(i);
         %Atualiza o nível inicial; Precisa mudar pra levar em conta o nível
         %da iteração anterior
         for j=length(Nivel):-1:1
             %Para cada nível de reservatório final:
-            armf=Nivel(length(Nivel)-j+1);
+            armf=Nivel(j);
             %Atualiza o nível final
             for k=1:size(E,2)
                 %Para cada afluência:
                 afl=E(n,k);
                 %Atualiza a afluência
-                en_util=(armi-armf+afl)*.9;
-                %Calcula quanta energia pode ser gerada com a água
+                en_util=min((armi-armf+afl),Tumax)*.9;
+                %Calcula quanta energia pode ser gerada com a água,
+                %considerando o turbinamento máximo
                 %disponível
                 if en_util<load
                     %Caso a energia da UHE não seja suficiente
@@ -149,4 +150,5 @@ for n=size(E,1):-1:1
         end
     end
 end
+DecisaoPorAfluencia
 NaoFactivel
