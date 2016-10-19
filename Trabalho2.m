@@ -57,39 +57,71 @@ Nivel=[Volmin:10:Volmax];
 %j - contagem do nível de armazenamento no fim do período
 %k - contagem da afluência
 
-for n=size(E,1):-1:1
+for n=size(E,1):-1:1  
+    %Para cada estágio:
     load=Carga(n);
+    %Atualiza a carga do estágio
     for i=1:length(Nivel)
+        %Para cada nível de reservatório inicial:
         armi=Nivel(length(Nivel)-i+1);
+        %Atualiza o nível inicial; Precisa mudar pra levar em conta o nível
+        %da iteração anterior
         for j=length(Nivel)
+            %Para cada nível de reservatório final:
             armf=Nivel(length(Nivel)-j+1);
+            %Atualiza o nível final
             for k=1:size(E,2)
+                %Para cada afluência:
                 afl=E(n,k);
+                %Atualiza a afluência
                 en_util=(armi-armf+afl)*.9;
+                %Calcula quanta energia pode ser gerada com a água
+                %disponível
                 if en_util<load
+                    %Caso a energia da UHE não seja suficiente
                     decisao_h=en_util;
+                    %A decisao hidreletrica é turbinar todo o possivel
                     load_t1=load-decisao_h;
+                    %Calcula o quanto falta pras térmicas gerarem
                     if L1max<load_t1
+                        %Caso a térmica mais barata não seja suficiente
                         decisao_t1=L1max;
+                        %A decisão pra térmica mais barata é gerar seu máximo
                         load_t2=load_t1-L1max;
+                        %Calcula quanto falta pra térmica mais cara gerar
                         if L2max<load_t2
+                            %Caso a térmica mais cara não seja suficiente
                             decisao_t2=L2max;
+                            %A decisão pra térmica mais cara é gerar seu
+                            %máximo
                             load_corte=load_t2-L2max;
+                            %Calcula quanto vai restar pro corte de carga
                             decisao_corte=load_corte;
+                            %O corte de carga gera o que falta
                         else
+                            %Caso a térmica mais cara seja o suficiente
                             decisao_corte=0;
+                            %Não é necessário corte de carga
                             decisao_t2=load_t2;
+                            %A térmica mais cara gera o restante
                         end
                     else
+                        %Caso a térmica mais barata seja o suficiente
                         decisao_corte=0;
+                        %Não é necessário corte de carga
                         decisao_t2=0;
+                        %Não é necessária a térmica mais cara
                         decisao_t1=load_t1;
+                        %A térmica mais barata gera o restante
                     end
                 else
+                    %Caso a hidrelétrica seja o suficiente
                     decisao_corte=0;
                     decisao_t2=0;
                     decisao_t1=0;
+                    %Não é necessário corte de carga nem UTEs
                     decisao_h=load;
+                    %A hidrelétrica gera toda a energia necessária
                 end
             end
         end
