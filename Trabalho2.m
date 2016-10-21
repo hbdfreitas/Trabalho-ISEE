@@ -60,7 +60,7 @@ Nivel=[Volmin:10:Volmax];
 DecisaoPorAfluencia=[];
 %Armazena os dados de decisao por afluencia
 f=0;
-%Armazena a factibilidade de cada caso
+%Contador para o vetor que armazena a factibilidade de cada caso
 for n=size(E,1):-1:1  
     %Para cada estágio:
     load=Carga(n);
@@ -154,3 +154,5 @@ for n=size(E,1):-1:1
 end
 
 CustoImediato=[Custo1.*DecisaoPorAfluencia(:,2) Custo2.*DecisaoPorAfluencia(:,3) CustoC.*DecisaoPorAfluencia(:,4)];
+% %Custo Imediato das decisões tomadas 
+CustoImediatoTotal=CustoImediato(:,1)+CustoImediato(:,2)+CustoImediato(:,3);
