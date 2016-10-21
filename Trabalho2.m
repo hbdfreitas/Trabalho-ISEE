@@ -1,6 +1,8 @@
 clc;
 clear;
 
+%Inicialização dos dados
+
 %Características operativas UHE;
 
 Volmax=100;     %Volume máximo
@@ -50,12 +52,7 @@ E=[E1; E2; E3; E4; E5; E6; E7; E8; E9; E10; E11; E12;];
 
 Nivel=[Volmin:10:Volmax];
 
-
-%Cálculo recursivo - Estágio final
-%n - contagem do estágio
-%i - contagem do nível de armazenamento no início do período
-%j - contagem do nível de armazenamento no fim do período
-%k - contagem da afluência
+%Decisão de operação econômica:
 
 DecisaoPorAfluencia=[];
 %Armazena os dados de decisao por afluencia
@@ -91,13 +88,13 @@ for n=size(E,1):-1:1
                         NaoFactivel(f,:)=[n i j k];
                         %Estágio, nivel inicial, nivel final e afluencia
                         %nao factivel
-                        decisao_h=0;
+                        decisao_h=-1;
                         %A decisao hidreletrica é nula
                     else
                         decisao_h=en_util;
                         %A decisao hidreletrica é turbinar todo o possivel
                     end
-                    load_t1=load-decisao_h;
+                    load_t1=load-max(decisao_h,0);
                     %Calcula o quanto falta pras térmicas gerarem
                     if L1max<load_t1
                         %Caso a térmica mais barata não seja suficiente
@@ -154,5 +151,30 @@ for n=size(E,1):-1:1
 end
 
 CustoImediato=[Custo1.*DecisaoPorAfluencia(:,2) Custo2.*DecisaoPorAfluencia(:,3) CustoC.*DecisaoPorAfluencia(:,4)];
-% %Custo Imediato das decisões tomadas 
+%Custo Imediato das decisões tomadas 
 CustoImediatoTotal=CustoImediato(:,1)+CustoImediato(:,2)+CustoImediato(:,3);
+%Soma dos custos imediatos para as UTEs e o corte de carga
+
+%Cálculo do custo esperado:
+
+for m=size(E,2):size(E,2):size(CustoImediatoTotal,1)
+    %A cada grupo de afluencias da matriz de custo total
+    for t=(m-size(E,2)+1):m
+        if DecisaoPorAfluencia(t,1)~=-1
+            VetorCusto(mod(t-1,size(E,2))+1)=CustoImediatoTotal(t);
+        end
+    end
+    %Percorre dentro do grupo de afluencias e adiciona a um vetor os
+    %casos factiveis
+    MediadeCustos=sum(VetorCusto)/size(VetorCusto,2);
+    VetorCusto=[];
+    CustoEsperado(m/size(E,2))=MediadeCustos;
+end
+%Ignora os casos de não factibilidade e calcula o custo esperado (custo
+%imediato medio) das tres afluencias, precisa ser somado ao custo futuro.
+
+%Custo futuro e custo ótimo esperado:
+
+for z=0:length(Nivel)^2:length(CustoEsperado)-length(Nivel)^2
+    x=z
+end
