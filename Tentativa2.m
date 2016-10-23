@@ -62,9 +62,14 @@ decisaocortedecarga=[];
 custo_imediato=[];
 custo_futuro=[];
 custo_total=[];
-                
+custo_esperado=[];
+custo_otimo=[];
+
 custo_futuro=0;
 Tabela=[];
+posicaocustootimo=[];
+vetor_custo_otimo=[];
+vetor_custo_menor=[];
 f=0;
 
 for n=size(E,1):-1:12  
@@ -79,6 +84,12 @@ for n=size(E,1):-1:12
         for j=1:length(Nivel)
             %Para cada nível de reservatório final:
             armf=Nivel(j);
+            %Atualiza o nível final
+            if size(vetor_custo_menor,1)~=0    
+                custof=vetor_custo_menor(j,1)/1.1;
+            else
+                custof=0;
+            end
             %Atualiza o nível final
             for k=1:size(E,2)
                 %Para cada afluência:
@@ -147,29 +158,65 @@ for n=size(E,1):-1:12
                 end
                 
                 custoi=decisao_t1*custo1+decisao_t2*custo2+decisao_corte*custoc;
-                custof=0;
                 custot=custoi+custof;
-                
                 
                 estagio(length(estagio)+1)=n;
                 armazenamentoinicial(length(armazenamentoinicial)+1)=armi; 
-                armazenamentofinal(length(armazenamentoinicial)+1)=armf; 
+                armazenamentofinal(length(armazenamentofinal)+1)=armf; 
                 decisaohidreletrica(length(decisaohidreletrica)+1)=decisao_h; 
                 decisaoute1(length(decisaoute1)+1)=decisao_t1; 
                 decisaoute2(length(decisaoute2)+1)=decisao_t2;
                 decisaocortedecarga(length(decisaocortedecarga)+1)=decisao_corte;
                 custo_imediato(length(custo_imediato)+1)=custoi;
+                custof
+                n
+                i
+                j
+                k
                 custo_futuro(length(custo_futuro)+1)=custof;
-                custo_total(length(custo_total)+1)=custoc;
-                    
+                custo_total(length(custo_total)+1)=custot;
+                   
+                if k==size(E,2)
+                    custoaf=custo_total(length(custo_total)-size(E,2)+1:length(custo_total));
+                    custoes=sum(custoaf)/length(custoaf);
+                    custo_esperado(length(custo_esperado)-1)=custoes;
+                    custo_esperado(length(custo_esperado))=custoes;
+                    custo_esperado(length(custo_esperado)+1)=custoes;
+                else
+                    custo_esperado(length(custo_esperado)+1)=-1;
+                end
+                custo_otimo(length(custo_otimo)+1)=-1;
+                
                 decisao_h=0;
                 decisao_t1=0;
                 decisao_t2=0;
                 decisao_corte=0;
                 %Reinicializa as variáveis de decisão
             end
-            custoaf=custo_imediato(length(custo_imediato)-2:length(custo_imediato));
-            custo_esperado=[sum(custoaf)/length(custoaf) sum(custoaf)/length(custoaf) sum(custoaf)/length(custoaf)];
         end
+        A=custo_esperado(length(custo_esperado)-length(Nivel)+1:length(custo_esperado));
+        B=min(A);
+        C=A==B;
+        custo_otimo(length(custo_otimo))=B;
+        vetor_custo_otimo(size(vetor_custo_otimo,1)+1,1)=B;
+        vetor_custo_otimo(size(vetor_custo_otimo,1),2)=armi;
+        vetor_custo_otimo(size(vetor_custo_otimo,1),3)=n;
+        posicaocustootimo(size(posicaocustootimo,1)+1,:)=C;
     end
+    vetor_custo_menor=vetor_custo_otimo((size(vetor_custo_otimo,1)+1-length(Nivel):size(vetor_custo_otimo,1)),:);
 end
+
+Tabela=[
+    size(estagio)
+    size(armazenamentoinicial)
+    size(armazenamentofinal)
+    size(decisaohidreletrica)
+    size(decisaoute1)
+    size(decisaoute2)
+    size(decisaocortedecarga)
+    size(custo_imediato)
+    size(custo_futuro)
+    size(custo_total)
+    size(custo_esperado)
+    size(custo_otimo)
+    ]
