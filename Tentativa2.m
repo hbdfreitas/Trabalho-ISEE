@@ -64,12 +64,15 @@ custo_futuro=[];
 custo_total=[];
 custo_esperado=[];
 custo_otimo=[];
+afluencia=[];
 
 Tabela=[];
 posicaocustootimo=[];
 vetor_custo_otimo=[];
 vetor_custo_menor=[];
+vetor_custo_esperado=[];
 f=0;
+teste=[];
 
 for n=size(E,1):-1:1  
     %Para cada estágio:
@@ -161,7 +164,8 @@ for n=size(E,1):-1:1
                 
                 estagio(length(estagio)+1)=n;
                 armazenamentoinicial(length(armazenamentoinicial)+1)=armi; 
-                armazenamentofinal(length(armazenamentofinal)+1)=armf; 
+                armazenamentofinal(length(armazenamentofinal)+1)=armf;
+                afluencia(length(afluencia)+1)=afl;
                 decisaohidreletrica(length(decisaohidreletrica)+1)=decisao_h; 
                 decisaoute1(length(decisaoute1)+1)=decisao_t1; 
                 decisaoute2(length(decisaoute2)+1)=decisao_t2;
@@ -175,6 +179,7 @@ for n=size(E,1):-1:1
                     custo_esperado(length(custo_esperado)-1)=custoes;
                     custo_esperado(length(custo_esperado))=custoes;
                     custo_esperado(length(custo_esperado)+1)=custoes;
+                    vetor_custo_esperado(length(vetor_custo_esperado)+1)=custoes;
                 else
                     custo_esperado(length(custo_esperado)+1)=-1;
                 end
@@ -187,10 +192,12 @@ for n=size(E,1):-1:1
                 %Reinicializa as variáveis de decisão
             end
         end
-        A=custo_esperado(length(custo_esperado)-length(Nivel)+1:length(custo_esperado));
+        A=vetor_custo_esperado(length(vetor_custo_esperado)-length(Nivel)+1:length(vetor_custo_esperado));
+        teste(length(teste)+1:length(teste)+7)=[A];
         B=min(A);
         C=A==B;
-        custo_otimo(length(custo_otimo))=B;
+        %custo_otimo(length(custo_otimo))=B;
+        custo_otimo(length(custo_otimo)-k*length(Nivel)+1)=B;
         vetor_custo_otimo(size(vetor_custo_otimo,1)+1,1)=B;
         vetor_custo_otimo(size(vetor_custo_otimo,1),2)=armi;
         vetor_custo_otimo(size(vetor_custo_otimo,1),3)=n;
@@ -203,6 +210,7 @@ Tabela=[
     estagio
     armazenamentoinicial
     armazenamentofinal
+    afluencia
     decisaohidreletrica
     decisaoute1
     decisaoute2
@@ -214,4 +222,13 @@ Tabela=[
     custo_otimo
     ];
 
-Arvore=[vetor_custo_otimo posicaocustootimo]
+Arvore=[vetor_custo_otimo posicaocustootimo];
+
+
+
+filename = 'dados.xlsx';
+xlswrite(filename,Tabela)
+ 
+ 
+filename = 'dadosarvore.xlsx';
+xlswrite(filename,Arvore)
