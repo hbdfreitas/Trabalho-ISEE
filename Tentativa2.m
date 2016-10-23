@@ -65,14 +65,13 @@ custo_total=[];
 custo_esperado=[];
 custo_otimo=[];
 
-custo_futuro=0;
 Tabela=[];
 posicaocustootimo=[];
 vetor_custo_otimo=[];
 vetor_custo_menor=[];
 f=0;
 
-for n=size(E,1):-1:12  
+for n=size(E,1):-1:1  
     %Para cada estágio:
     load=Carga(n);
     %Atualiza a carga do estágio
@@ -168,14 +167,8 @@ for n=size(E,1):-1:12
                 decisaoute2(length(decisaoute2)+1)=decisao_t2;
                 decisaocortedecarga(length(decisaocortedecarga)+1)=decisao_corte;
                 custo_imediato(length(custo_imediato)+1)=custoi;
-                custof
-                n
-                i
-                j
-                k
                 custo_futuro(length(custo_futuro)+1)=custof;
                 custo_total(length(custo_total)+1)=custot;
-                   
                 if k==size(E,2)
                     custoaf=custo_total(length(custo_total)-size(E,2)+1:length(custo_total));
                     custoes=sum(custoaf)/length(custoaf);
@@ -207,16 +200,18 @@ for n=size(E,1):-1:12
 end
 
 Tabela=[
-    size(estagio)
-    size(armazenamentoinicial)
-    size(armazenamentofinal)
-    size(decisaohidreletrica)
-    size(decisaoute1)
-    size(decisaoute2)
-    size(decisaocortedecarga)
-    size(custo_imediato)
-    size(custo_futuro)
-    size(custo_total)
-    size(custo_esperado)
-    size(custo_otimo)
-    ]
+    estagio
+    armazenamentoinicial
+    armazenamentofinal
+    decisaohidreletrica
+    decisaoute1
+    decisaoute2
+    decisaocortedecarga
+    custo_imediato
+    custo_futuro
+    custo_total
+    custo_esperado
+    custo_otimo
+    ];
+
+Arvore=[vetor_custo_otimo posicaocustootimo]
